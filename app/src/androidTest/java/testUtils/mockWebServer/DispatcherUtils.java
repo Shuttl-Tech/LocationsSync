@@ -42,6 +42,7 @@ public class DispatcherUtils {
         }
 
 
+
         if (expectedJsonCurrentKey.equals(actualJsonCurrentKey)) {
             if (expectedRequestBodyOfSyncRequest.optJSONArray(expectedJsonCurrentKey).length() > 0) {
 
@@ -52,31 +53,31 @@ public class DispatcherUtils {
                         JSONObject currentLocationObjectOfActualBodyJson = UiUtils.convertStringJsonToJsonObject(actualRequestBodyOfSyncRequest.optJSONArray(actualJsonCurrentKey).optString(i));
 
                         try {
-                            if (!currentLocationObjectOfExpectedBodyJson.get("accuracy").equals(currentLocationObjectOfActualBodyJson.get("accuracy"))) {
-                                LogUITest.debug("'Accuracy' of " + i + 1 + " Location is different");
-                                LogUITest.debug("Expected 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
-                                LogUITest.debug("Actual 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
-                                return false;
-
-                            }
+//                            if (!currentLocationObjectOfExpectedBodyJson.get("accuracy").equals(currentLocationObjectOfActualBodyJson.get("accuracy"))) {
+//                                LogUITest.debug("'Accuracy' of " + (i + 1) + " Location is different");
+//                                LogUITest.debug("Expected 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
+//                                LogUITest.debug("Actual 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
+//                                return false;
+//
+//                            }
                             if (!currentLocationObjectOfExpectedBodyJson.get("latitude").equals(currentLocationObjectOfActualBodyJson.get("latitude"))) {
-                                LogUITest.debug("'Accuracy' of " + i + 1 + " Location is different");
-                                LogUITest.debug("Expected 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
-                                LogUITest.debug("Actual 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
+                                LogUITest.debug("'Accuracy' of " + (i + 1) + " Location is different");
+                                LogUITest.debug("Expected 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
+                                LogUITest.debug("Actual 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
                                 return false;
 
                             }
                             if (!currentLocationObjectOfExpectedBodyJson.get("longitude").equals(currentLocationObjectOfActualBodyJson.get("longitude"))) {
-                                LogUITest.debug("'Accuracy' of " + i + 1 + " Location is different");
-                                LogUITest.debug("Expected 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
-                                LogUITest.debug("Actual 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
+                                LogUITest.debug("'Accuracy' of " + (i + 1) + " Location is different");
+                                LogUITest.debug("Expected 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
+                                LogUITest.debug("Actual 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
                                 return false;
 
                             }
                             if (!currentLocationObjectOfExpectedBodyJson.get("provider").equals(currentLocationObjectOfActualBodyJson.get("provider"))) {
-                                LogUITest.debug("'Accuracy' of " + i + 1 + " Location is different");
-                                LogUITest.debug("Expected 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
-                                LogUITest.debug("Actual 'Accuracy' of " + i + 1 + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
+                                LogUITest.debug("'Accuracy' of " + (i + 1) + " Location is different");
+                                LogUITest.debug("Expected 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfExpectedBodyJson.get("accuracy"));
+                                LogUITest.debug("Actual 'Accuracy' of " + (i + 1) + " Location is " + currentLocationObjectOfActualBodyJson.get("accuracy"));
                                 return false;
 
                             }
@@ -129,7 +130,7 @@ public class DispatcherUtils {
 
                     // Create Expected Location Request Body containing maximum number of locations equal or lesser than sync service batch size.
                     // Batch Size : Maximum Number of locations sync service can take to backend at a time
-                    if (i + 1 == batchSizeOfSyncService)
+                    if ((i + 1) == batchSizeOfSyncService)
                         break;
                 }
                 // "data" is the main object key in sync API implementation in GPS SDK

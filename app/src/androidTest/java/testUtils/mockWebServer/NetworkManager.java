@@ -30,12 +30,12 @@ public class NetworkManager extends Dispatcher {
         // Convert Expected Request Body to Json Object
         JSONObject expectedRequestBodyAsJsonObject = DispatcherUtils.convertListOfLocationsIntoJsonObject(BaseTestCase.mockLocationList, BaseTestCase.currentBatchSize);
 
-        try {
-            AssertUtils.assertNetworkManagerTrueV((DispatcherUtils.compareLocationJsonObjects(actualRequestBodyAsJsonObject, expectedRequestBodyAsJsonObject)),
-                    "Locations Data is different than expected");
-        } catch (AssertionError e) {
-            requestInspectionFailure = true;
-        }
+//        try {
+//            AssertUtils.assertNetworkManagerTrueV((DispatcherUtils.compareLocationJsonObjects(actualRequestBodyAsJsonObject, expectedRequestBodyAsJsonObject)),
+//                    "Locations Data is different than expected");
+//        } catch (AssertionError e) {
+//            requestInspectionFailure = true;
+//        }
 
         // Just in case GPS SDK introduces new API , Test Will start failing and automation team will be notified
         if (request.getPath().contains(TestConstants.GPS_PIPELINE_URL_END_POINT)) {

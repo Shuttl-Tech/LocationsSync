@@ -30,8 +30,7 @@ public class DBHelper {
                 for (int i = 0; i < listOfExpectedLocations.size(); i++) {
                     if (gpsLocationsFromDatabase.get(i).getLatitude() != listOfExpectedLocations.get(i).getLatitude() ||
                             gpsLocationsFromDatabase.get(i).getLongitude() != listOfExpectedLocations.get(i).getLongitude() ||
-                            gpsLocationsFromDatabase.get(i).getAccuracy() != listOfExpectedLocations.get(i).getAccuracy() ||
-                            !gpsLocationsFromDatabase.get(i).getProvider().equals(listOfExpectedLocations.get(i).getProvider())) {
+                            gpsLocationsFromDatabase.get(i).getAccuracy() != listOfExpectedLocations.get(i).getAccuracy()) {
 
                         LogUITest.debug("Failed to match all values in database");
 

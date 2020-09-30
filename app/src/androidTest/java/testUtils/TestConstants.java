@@ -69,7 +69,7 @@ public class TestConstants {
 
     // ---------------------------------    LOCATION CONFIG FOR END TO END FLOW  -------------------------------------
 
-    public static final int MIN_TIME_INTERVAL_BETWEEN_TWO_LOCATIONS = 100;  // in millis
+    public static final int MIN_TIME_INTERVAL_BETWEEN_TWO_LOCATIONS = 200;  // in millis
     public static final int MIN_DISTANCE_INTERVAL_BETWEEN_TWO_LOCATIONS = 100;
     public static final int MIN_PING_SERVICE_SYNC_INTERVAL = 7000;  // in millis
     public static final int ACCURACY = 3;

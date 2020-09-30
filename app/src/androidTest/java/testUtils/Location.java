@@ -4,10 +4,10 @@ public class Location {
     private double latitude;
     private double longitude;
     private long timeStamp = System.currentTimeMillis();
-    private String provider = "gps";
-    float accuracy = 10f;
+    private String provider = "fused";
+    float accuracy = 5;
     int satellite = -1;
-    double altitude;
+    double altitude = 5.5;
 
 
     public int getSatellite() {
