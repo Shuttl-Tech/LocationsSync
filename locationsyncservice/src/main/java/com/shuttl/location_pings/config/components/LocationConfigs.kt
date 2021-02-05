@@ -20,7 +20,8 @@ data class LocationConfigs(
     val wakeLock: Boolean? = true, // WakeLocks are enabled on service if made true
     val alarm: Boolean? = true, // Alarm Manager
     val canReuseLastLocation: Boolean? = true, // Last Location gets reused for the Sync on every interval, This will make sure that we ping every on every interval
-    val smallIcon: Int = R.drawable.ic_loc // Notification icon
+    val smallIcon: Int = R.drawable.ic_loc, // Notification icon
+    val alarmTriggerInterval: Int = 15000 // Alarm trigger interval from current time
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -36,6 +37,7 @@ data class LocationConfigs(
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readInt(),
         parcel.readInt()
     ) {
     }
@@ -54,6 +56,7 @@ data class LocationConfigs(
         parcel.writeValue(alarm)
         parcel.writeValue(canReuseLastLocation)
         parcel.writeInt(smallIcon)
+        parcel.writeInt(alarmTriggerInterval)
     }
 
     override fun describeContents(): Int {

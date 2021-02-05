@@ -120,10 +120,6 @@ class LocationSaveService : Service() {
             if (configs.timeout > 0)
                 timer.cancel()
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-            if (configs.alarm == true) {
-                cancelAlarm()
-                unregisterReceiver(receiver)
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -172,26 +168,26 @@ class LocationSaveService : Service() {
     }
 
     fun scheduleAlarm() {
-        Log.i(TAG, "Scheduling at alarm ${Date(System.currentTimeMillis() + 30000)}")
+        Log.i(TAG, "Scheduling at alarm ${Date(System.currentTimeMillis() + configs.alarmTriggerInterval)}")
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                 (getSystemService(Context.ALARM_SERVICE) as AlarmManager).setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + 2000,
+                    System.currentTimeMillis() + configs.alarmTriggerInterval,
                     getAlarmIntent()
                 )
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
                 (getSystemService(Context.ALARM_SERVICE) as AlarmManager).setExact(
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + 2000,
+                    System.currentTimeMillis() + configs.alarmTriggerInterval,
                     getAlarmIntent()
                 )
             }
             else -> {
                 (getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + 2000,
+                    System.currentTimeMillis() + configs.alarmTriggerInterval,
                     getAlarmIntent()
                 )
             }
