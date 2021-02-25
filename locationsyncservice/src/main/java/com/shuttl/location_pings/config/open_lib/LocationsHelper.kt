@@ -47,8 +47,7 @@ object LocationsHelper {
         callback: LocationPingServiceCallback<T>,
         intent: Intent
     ) {
-        val syncUrl = URL(locationConfigs.syncUrl)
-        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
+        val baseUrl = getBaseUrlFromSyncUrl(locationConfigs)
         locationConfigs.saveToSharedPref(app)
         GPSLocation.removeFromSharedPref(app)
         LocationRetrofit.resetRetrofit(baseUrl, interceptor)
@@ -67,6 +66,12 @@ object LocationsHelper {
         app.bindService(pingIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    private fun getBaseUrlFromSyncUrl(locationConfigs: LocationConfigs): String {
+        val syncUrl = URL(locationConfigs.syncUrl)
+        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
+        return baseUrl
+    }
+
     fun <T> initSilently(
         context: Context,
         interceptor: Interceptor? = null,
@@ -77,9 +82,8 @@ object LocationsHelper {
         val pendingIntent: PendingIntent = PendingIntent.getService(context, 0, intent, 0)
         this.callback = callback as LocationPingServiceCallback<Any>
         val locationConfigs = LocationConfigs.getFromLocal(context)
-        if (TextUtils.isEmpty(locationConfigs?.syncUrl)) return
-        val syncUrl = URL(locationConfigs?.syncUrl)
-        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
+        if (locationConfigs == null || TextUtils.isEmpty(locationConfigs.syncUrl)) return
+        val baseUrl = getBaseUrlFromSyncUrl(locationConfigs)
         LocationRetrofit.resetRetrofit(baseUrl, interceptor)
         val pingIntent = Intent(context, LocationPingService::class.java)
         pingIntent.putExtra("config", locationConfigs)
