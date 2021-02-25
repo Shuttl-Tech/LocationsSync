@@ -8,6 +8,7 @@ import com.shuttl.location_pings.config.components.LocationRetrofit
 import com.shuttl.location_pings.data.dao.GPSLocationsDao
 import com.shuttl.location_pings.data.model.entity.GPSLocation
 import com.shuttl.location_pings.data.model.request.SendLocationRequestBody
+import com.shuttl.location_pings.isInternetConnected
 import kotlinx.coroutines.*
 
 class LocationRepo(private val locationsDao: GPSLocationsDao?) {
@@ -57,6 +58,10 @@ class LocationRepo(private val locationsDao: GPSLocationsDao?) {
                 try {
                     if (TextUtils.isEmpty(url)) {
                         Log.e(TAG, "No Url Found")
+                    }
+                    if (!context.isInternetConnected()) {
+                        callback?.errorWhileSyncLocations(Exception("Internet is not available"))
+                        return@launch
                     }
                     val obj = callback?.beforeSyncLocations(locations, reused)
                     val response = LocationRetrofit.getLocationApi()?.syncLocation(

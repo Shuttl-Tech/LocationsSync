@@ -1,12 +1,11 @@
 package com.shuttl.location_pings.config.components
 
-import android.text.TextUtils
 import com.shuttl.location_pings.data.api.LocationApi
-import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 internal object LocationRetrofit {
 
@@ -16,16 +15,20 @@ internal object LocationRetrofit {
 
     private var networkDebug: Interceptor? = null
 
+    private const val TIMEOUT_RESPONSE: Long = 30
+    private const val TIMEOUT_CONNECTION: Long = 10
+
     private fun getOkHttpClient(interceptor: Interceptor? = networkDebug): OkHttpClient {
         networkDebug = interceptor
         val b = OkHttpClient.Builder()
+            b.readTimeout(TIMEOUT_RESPONSE, TimeUnit.SECONDS)
+            b.connectTimeout(TIMEOUT_CONNECTION, TimeUnit.SECONDS)
         if (interceptor != null)
             b.addInterceptor(interceptor)
         return b.build()
     }
 
-    fun resetRetrofit(baseUrlR: String?, httpClient: Interceptor?) {
-        baseUrl = computeBaseUrl(baseUrlR)
+    fun resetRetrofit(baseUrl: String?, httpClient: Interceptor?) {
         if (baseUrl.isNullOrEmpty()) return
         retrofit = Retrofit.Builder()
             .client(getOkHttpClient(httpClient))
@@ -45,8 +48,7 @@ internal object LocationRetrofit {
         return retrofit
     }
 
-    fun getRetrofitObj(baseUrlR: String?): Retrofit? {
-        baseUrl = computeBaseUrl(baseUrlR)
+    fun getRetrofitObj(baseUrl: String?): Retrofit? {
         if (baseUrl.isNullOrEmpty()) return retrofit
         retrofit = Retrofit.Builder()
             .client(getOkHttpClient())
@@ -56,15 +58,8 @@ internal object LocationRetrofit {
         return retrofit
     }
 
-    fun getLocationApi(baseUrlR: String? = null): LocationApi? {
-        baseUrl = computeBaseUrl(baseUrlR)
+    fun getLocationApi(baseUrl: String? = null): LocationApi? {
         return getRetrofitObj(baseUrl)?.create(LocationApi::class.java)
-    }
-
-    private fun computeBaseUrl(baseUrl: String?): String? {
-        if (baseUrl.isNullOrEmpty()) return baseUrl
-        else if (baseUrl.endsWith("/")) return baseUrl
-        else return "$baseUrl/"
     }
 
 }

@@ -54,14 +54,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         requestLocationPermission()
 
-        if (!BuildConfig.BUILD_TYPE.equals("debug")) {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             val intent = Intent(this, LocationPingService::class.java)
             intent.action = "STOP"
 
             LocationsHelper.initLocationsModule(
                 app = application,
                 locationConfigs = LocationConfigs(
-                    syncUrl = "http://10.191.6.177:3000/record/",
+                    syncUrl = "https://gps.shuttlstage.com/streams/tuktuk-driver/record",
                     minSyncInterval = 5000,
                     minDistanceInterval = 10,
                     minTimeInterval = 1000,

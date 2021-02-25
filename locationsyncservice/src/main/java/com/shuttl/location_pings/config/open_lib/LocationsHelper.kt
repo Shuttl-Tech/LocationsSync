@@ -23,6 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
+import java.net.URL
 
 object LocationsHelper {
 
@@ -46,9 +47,11 @@ object LocationsHelper {
         callback: LocationPingServiceCallback<T>,
         intent: Intent
     ) {
+        val syncUrl = URL(locationConfigs.syncUrl)
+        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
         locationConfigs.saveToSharedPref(app)
         GPSLocation.removeFromSharedPref(app)
-        LocationRetrofit.resetRetrofit(locationConfigs.syncUrl, interceptor)
+        LocationRetrofit.resetRetrofit(baseUrl, interceptor)
         val pendingIntent: PendingIntent = PendingIntent.getService(app, 0, intent, 0)
         this.callback = callback as LocationPingServiceCallback<Any>
         val pingIntent = Intent(app, LocationPingService::class.java)
@@ -75,7 +78,9 @@ object LocationsHelper {
         this.callback = callback as LocationPingServiceCallback<Any>
         val locationConfigs = LocationConfigs.getFromLocal(context)
         if (TextUtils.isEmpty(locationConfigs?.syncUrl)) return
-        LocationRetrofit.resetRetrofit(locationConfigs?.syncUrl, interceptor)
+        val syncUrl = URL(locationConfigs?.syncUrl)
+        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
+        LocationRetrofit.resetRetrofit(baseUrl, interceptor)
         val pingIntent = Intent(context, LocationPingService::class.java)
         pingIntent.putExtra("config", locationConfigs)
         pingIntent.putExtra("pendingIntent", pendingIntent)
