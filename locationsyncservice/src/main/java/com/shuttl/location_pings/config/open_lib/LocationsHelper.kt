@@ -23,6 +23,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
+import java.net.URL
+import kotlin.Exception
 
 object LocationsHelper {
 
@@ -46,9 +48,10 @@ object LocationsHelper {
         callback: LocationPingServiceCallback<T>,
         intent: Intent
     ) {
+        val baseUrl = getBaseUrlFromSyncUrl(locationConfigs)
         locationConfigs.saveToSharedPref(app)
         GPSLocation.removeFromSharedPref(app)
-        LocationRetrofit.resetRetrofit(locationConfigs.syncUrl, interceptor)
+        LocationRetrofit.resetRetrofit(baseUrl, interceptor)
         val pendingIntent: PendingIntent = PendingIntent.getService(app, 0, intent, 0)
         this.callback = callback as LocationPingServiceCallback<Any>
         val pingIntent = Intent(app, LocationPingService::class.java)
@@ -64,6 +67,13 @@ object LocationsHelper {
         app.bindService(pingIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    private fun getBaseUrlFromSyncUrl(locationConfigs: LocationConfigs): String {
+        if (locationConfigs.syncUrl.isNullOrBlank()) throw Exception("SyncUrl should not be null or empty")
+        val syncUrl = URL(locationConfigs.syncUrl)
+        val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
+        return baseUrl
+    }
+
     fun <T> initSilently(
         context: Context,
         interceptor: Interceptor? = null,
@@ -74,8 +84,9 @@ object LocationsHelper {
         val pendingIntent: PendingIntent = PendingIntent.getService(context, 0, intent, 0)
         this.callback = callback as LocationPingServiceCallback<Any>
         val locationConfigs = LocationConfigs.getFromLocal(context)
-        if (TextUtils.isEmpty(locationConfigs?.syncUrl)) return
-        LocationRetrofit.resetRetrofit(locationConfigs?.syncUrl, interceptor)
+        if (locationConfigs == null || TextUtils.isEmpty(locationConfigs.syncUrl)) return
+        val baseUrl = getBaseUrlFromSyncUrl(locationConfigs)
+        LocationRetrofit.resetRetrofit(baseUrl, interceptor)
         val pingIntent = Intent(context, LocationPingService::class.java)
         pingIntent.putExtra("config", locationConfigs)
         pingIntent.putExtra("pendingIntent", pendingIntent)
