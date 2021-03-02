@@ -61,13 +61,11 @@ class LocationRepo(private val locationsDao: GPSLocationsDao?) {
                         Log.e(TAG, "No Url Found")
                     }
                     if (BatchCounter.getBatchCount() >= 10) {
-                        Log.e("MainActivity:", "batch complete")
                         callback?.errorWhileSyncLocations(Exception("Internet is not available"))
                         BatchCounter.reset()
                     }
                     if (!context.isInternetConnected()) {
                         BatchCounter.increment()
-                        Log.e("MainActivity:", "batch size ${BatchCounter.getBatchCount()}")
                         return@launch
                     }
                     val obj = callback?.beforeSyncLocations(locations, reused)
