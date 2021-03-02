@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import java.net.URL
+import kotlin.Exception
 
 object LocationsHelper {
 
@@ -67,6 +68,7 @@ object LocationsHelper {
     }
 
     private fun getBaseUrlFromSyncUrl(locationConfigs: LocationConfigs): String {
+        if (locationConfigs.syncUrl.isNullOrBlank()) throw Exception("SyncUrl should be null or empty")
         val syncUrl = URL(locationConfigs.syncUrl)
         val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
         return baseUrl

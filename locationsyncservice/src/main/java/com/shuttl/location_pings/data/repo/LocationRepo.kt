@@ -9,6 +9,7 @@ import com.shuttl.location_pings.data.dao.GPSLocationsDao
 import com.shuttl.location_pings.data.model.entity.GPSLocation
 import com.shuttl.location_pings.data.model.request.SendLocationRequestBody
 import com.shuttl.location_pings.isInternetConnected
+import com.shuttl.location_pings.util.BatchCounter
 import kotlinx.coroutines.*
 
 class LocationRepo(private val locationsDao: GPSLocationsDao?) {
@@ -59,8 +60,14 @@ class LocationRepo(private val locationsDao: GPSLocationsDao?) {
                     if (TextUtils.isEmpty(url)) {
                         Log.e(TAG, "No Url Found")
                     }
-                    if (!context.isInternetConnected()) {
+                    if (BatchCounter.getBatchCount() >= 10) {
+                        Log.e("MainActivity:", "batch complete")
                         callback?.errorWhileSyncLocations(Exception("Internet is not available"))
+                        BatchCounter.reset()
+                    }
+                    if (!context.isInternetConnected()) {
+                        BatchCounter.increment()
+                        Log.e("MainActivity:", "batch size ${BatchCounter.getBatchCount()}")
                         return@launch
                     }
                     val obj = callback?.beforeSyncLocations(locations, reused)
