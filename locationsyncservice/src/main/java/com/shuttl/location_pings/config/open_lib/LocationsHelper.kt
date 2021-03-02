@@ -68,7 +68,7 @@ object LocationsHelper {
     }
 
     private fun getBaseUrlFromSyncUrl(locationConfigs: LocationConfigs): String {
-        if (locationConfigs.syncUrl.isNullOrBlank()) throw Exception("SyncUrl should be null or empty")
+        if (locationConfigs.syncUrl.isNullOrBlank()) throw Exception("SyncUrl should not be null or empty")
         val syncUrl = URL(locationConfigs.syncUrl)
         val baseUrl = "${syncUrl.protocol}://${syncUrl.host}/"
         return baseUrl
