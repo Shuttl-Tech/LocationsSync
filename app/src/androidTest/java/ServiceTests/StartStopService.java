@@ -44,7 +44,8 @@ public class StartStopService extends BaseTestCase {
                         , TestConstants.WAKE_LOCK_ENABLED
                         , TestConstants.ENABLE_ALARM_MANAGER
                         , TestConstants.REUSE_LAST_LOCATION
-                        , TestConstants.NOTIFICATION_ICON_ID);
+                        , TestConstants.NOTIFICATION_ICON_ID
+                        , TestConstants.ALARM_TRIGGER_INTERVAL);
 
 
         ServiceHelper.stopSaveLocationServiceIfRunning(activityTestRule.getActivity().getApplication());
