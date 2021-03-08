@@ -66,7 +66,14 @@ class MainActivity : AppCompatActivity() {
                     minDistanceInterval = 10,
                     minTimeInterval = 1000,
                     wakeLock = true,
-                    alarm = true
+                    alarm = true,
+                    inactivitySyncInterval = 5 * 60 * 1000,
+                    accuracy = 3,
+                    alarmTriggerInterval = 15000,
+                    batchSize = 10, bufferSize = 100,
+                    canReuseLastLocation = true,
+                    timeout = 0
+
                 ), callback = callback, intent = intent
             )
         }
