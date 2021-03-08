@@ -24,7 +24,7 @@ class LocationPingService : Service() {
     private var configs: LocationConfigs = LocationConfigs()
     private var callback: LocationPingServiceCallback<Any>? = null
     private val customBinder = CustomBinder()
-    private var minSyncMultiplier = 1
+    private var isLocationStale = false
 
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -55,22 +55,22 @@ class LocationPingService : Service() {
             val locationsDao = LocationsDB.create(applicationContext)?.locationsDao()
             val locationRepo = LocationRepo(locationsDao)
 
-            val locations = locationsDao?.getLimitedLocations(configs.batchSize)
+            val locations = locationsDao?.getAllLocations()
 
             locations?.apply {
                 val lastSaveTime = TimeUnit.MILLISECONDS.toMillis(last().time.toLong())
                 val currentTime = System.currentTimeMillis() / 1000
 
-                Log.e("Debug", "dateTime $lastSaveTime, currentTime $currentTime")
+                Log.e("Debug", "dateTime $lastSaveTime, currentTime $currentTime, diff ${currentTime - lastSaveTime}")
 
-                if ((currentTime - lastSaveTime) > configs.inactivitySyncInterval) {
-                    minSyncMultiplier = 3
+                if ((currentTime - lastSaveTime) > configs.inactivityInterval/1000) {
+                    isLocationStale = true
                     sendMessage()
-                    Log.e("Debug", "time to reset timer tasks and counter 3")
-                } else if (minSyncMultiplier == 3) {
-                    minSyncMultiplier = 1
+                    Log.e("Debug", "time to reset timer tasks and isLocationStale $isLocationStale")
+                } else if (isLocationStale) {
+                    isLocationStale = false
                     sendMessage()
-                    Log.e("Debug", "time to reset timer tasks and counter 1")
+                    Log.e("Debug", "time to reset timer tasks and isLocationStale $isLocationStale")
                 }
             }
 
@@ -108,7 +108,7 @@ class LocationPingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         try {
-            if (configs.timeout <= 0) {
+            if (isIndefiniteTimer()) {
                 longTimer?.cancel()
                 timerTask?.cancel()
             } else timer?.cancel()
@@ -126,7 +126,7 @@ class LocationPingService : Service() {
             wakeLock?.releaseSafely {}
             callback?.serviceStoppedManually()
             try {
-                if (configs.timeout <= 0) {
+                if (isIndefiniteTimer()) {
                     longTimer?.cancel()
                     timerTask?.cancel()
                 } else timer?.cancel()
@@ -159,23 +159,10 @@ class LocationPingService : Service() {
                 wakeLock = this.getWakeLock()
                 wakeLock?.acquire(200 * 60 * 1000L /*200 minutes*/)
             }
-            if (configs.timeout <= 0) {
-                if (timerTask == null) {
-                    initializeTimerTask()
-                }
-                if (longTimer == null) {
-                    longTimer = Timer()
-                }
-                longTimer?.schedule(
-                    timerTask,
-                    0,
-                    configs.minSyncInterval.toLong() / minSyncMultiplier
-                )
+            if (isIndefiniteTimer()) {
+                setIndefiniteTimer()
             } else {
-                if (timer == null) {
-                    initializeTimer()
-                }
-                timer?.start()
+                setCountDownTimer()
             }
             if (configs.alarm == true) {
                 registerReceiver(receiver, IntentFilter(ACTION_ALARM));
@@ -195,10 +182,7 @@ class LocationPingService : Service() {
     }
 
     private fun initializeTimer() {
-        timer = object : CountDownTimer(
-            configs.timeout.toLong(),
-            configs.minSyncInterval.toLong() / minSyncMultiplier
-        ) {
+        timer = object : CountDownTimer(configs.timeout.toLong(), getSyncInterval("initializeTimer")) {
             override fun onTick(millisUntilFinished: Long) {
                 pingLocations()
             }
@@ -228,7 +212,7 @@ class LocationPingService : Service() {
         return PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    fun scheduleAlarm() {
+    private fun scheduleAlarm() {
         Log.i("LPing", "Scheduling at alarm ${Date(System.currentTimeMillis() + 30000)}")
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
@@ -271,9 +255,33 @@ class LocationPingService : Service() {
             stopWork()
             Handler().postDelayed({
                 work()
-            }, 5 * 60 * 1000)
+            }, getSyncInterval("handler"))
         }
         return@Handler false
     }
 
+    private fun getSyncInterval(tag: String): Long {
+        val interval = if (isLocationStale) configs.inactivityInterval else configs.minSyncInterval
+        Log.e("Debug", "$tag interval $interval")
+        return interval.toLong()
+    }
+
+    private fun setCountDownTimer() {
+        if (timer == null) {
+            initializeTimer()
+        }
+        timer?.start()
+    }
+
+    private fun setIndefiniteTimer() {
+        if (timerTask == null) {
+            initializeTimerTask()
+        }
+        if (longTimer == null) {
+            longTimer = Timer()
+        }
+        longTimer?.schedule(timerTask, 0, getSyncInterval("setIndefiniteTimer"))
+    }
+
+    private fun isIndefiniteTimer() = configs.timeout <= 0
 }
