@@ -161,11 +161,7 @@ class LocationPingService : Service() {
             }
             if (configs.timeout <= 0) {
                 if (timerTask == null) {
-                    timerTask = object : TimerTask() {
-                        override fun run() {
-                            pingLocations()
-                        }
-                    }
+                    initializeTimerTask()
                 }
                 if (longTimer == null) {
                     longTimer = Timer()
@@ -177,19 +173,7 @@ class LocationPingService : Service() {
                 )
             } else {
                 if (timer == null) {
-                    timer = object : CountDownTimer(
-                        configs.timeout.toLong(),
-                        configs.minSyncInterval.toLong() / minSyncMultiplier
-                    ) {
-                        override fun onTick(millisUntilFinished: Long) {
-                            pingLocations()
-                        }
-
-                        override fun onFinish() {
-                            callback?.serviceStopped()
-                            stopForeground(true)
-                        }
-                    }
+                    initializeTimer()
                 }
                 timer?.start()
             }
@@ -199,6 +183,30 @@ class LocationPingService : Service() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun initializeTimerTask() {
+        timerTask = object : TimerTask() {
+            override fun run() {
+                pingLocations()
+            }
+        }
+    }
+
+    private fun initializeTimer() {
+        timer = object : CountDownTimer(
+            configs.timeout.toLong(),
+            configs.minSyncInterval.toLong() / minSyncMultiplier
+        ) {
+            override fun onTick(millisUntilFinished: Long) {
+                pingLocations()
+            }
+
+            override fun onFinish() {
+                callback?.serviceStopped()
+                stopForeground(true)
+            }
         }
     }
 
