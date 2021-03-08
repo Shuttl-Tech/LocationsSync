@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                     minTimeInterval = 1000,
                     wakeLock = true,
                     alarm = true,
-                    inactivitySyncInterval = 5 * 60 * 1000,
+                    inactivitySyncInterval = 5 * 60,
                     accuracy = 3,
                     alarmTriggerInterval = 15000,
                     batchSize = 10, bufferSize = 100,

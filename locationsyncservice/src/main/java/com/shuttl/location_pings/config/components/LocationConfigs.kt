@@ -22,7 +22,7 @@ data class LocationConfigs(
     val canReuseLastLocation: Boolean? = true, // Last Location gets reused for the Sync on every interval, This will make sure that we ping every on every interval
     val smallIcon: Int = R.drawable.ic_loc, // Notification icon
     val alarmTriggerInterval: Int = 15000, // Alarm trigger interval from current time
-    val inactivitySyncInterval: Int = 5 * 60 * 1000
+    val inactivitySyncInterval: Int = 5 * 60
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
