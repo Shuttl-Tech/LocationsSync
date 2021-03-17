@@ -17,6 +17,9 @@ interface GPSLocationsDao {
     @Query("SELECT * FROM gps_locations LIMIT :entries")
     fun getLimitedLocations(entries: Int): List<GPSLocation>
 
+    @Query("SELECT * FROM gps_locations")
+    fun getAllLocations(): List<GPSLocation>
+
     @Query("SELECT * FROM gps_locations where time < :lastTime")
     fun getBatchLocations(lastTime: String): List<GPSLocation>
 

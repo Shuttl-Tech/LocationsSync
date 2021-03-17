@@ -11,6 +11,8 @@ import com.shuttl.location_pings.data.model.request.SendLocationRequestBody
 import com.shuttl.location_pings.isInternetConnected
 import com.shuttl.location_pings.util.BatchCounter
 import kotlinx.coroutines.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class LocationRepo(private val locationsDao: GPSLocationsDao?) {
 

@@ -10,7 +10,7 @@ import com.shuttl.locations_sync.R
 data class LocationConfigs(
     val minTimeInterval: Int = 10000, // min Time Interval for Location Fetching
     val minDistanceInterval: Int = 100, // min Distance Interval for Location Fetching
-    val minSyncInterval: Int = 10000, // min Time Interval for Location Syncing
+    val minSyncInterval: Int = 15000, // min Time Interval for Location Syncing
     val accuracy: Int = 3, // accuracy of Lat-Long in meters, 3 means 110 meter
     val bufferSize: Int = 100, // number of entries at max can be stored in the Database
     val batchSize: Int = 10, // number of location entries sent at a time while polling
@@ -21,7 +21,8 @@ data class LocationConfigs(
     val alarm: Boolean? = true, // Alarm Manager
     val canReuseLastLocation: Boolean? = true, // Last Location gets reused for the Sync on every interval, This will make sure that we ping every on every interval
     val smallIcon: Int = R.drawable.ic_loc, // Notification icon
-    val alarmTriggerInterval: Int = 15000 // Alarm trigger interval from current time
+    val alarmTriggerInterval: Int = 15000, // Alarm trigger interval from current time
+    val inactivityInterval: Int = 5 * 60 * 1000
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
