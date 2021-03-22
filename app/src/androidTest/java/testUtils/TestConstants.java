@@ -32,9 +32,8 @@ public class TestConstants {
 
     public static boolean WAKE_LOCK_ENABLED = true;
     public static boolean WAKE_LOCK_DISABLED = false;
-    public static boolean ALARM_LOCK_ENABLED = true;
-    public static boolean ALARM_LOCK_DISABLED = false;
     public static int ALARM_TRIGGER_INTERVAL = 15000;
+    public static int INACTIVITY_INTERVAL = 5 * 60 * 1000;
 
     public static boolean REUSE_LAST_LOCATION = false;
     public static boolean ENABLE_ALARM_MANAGER = true;
@@ -92,7 +91,7 @@ public class TestConstants {
     public static final int BUFFER_SIZE_GLOBAL = 50;
     public static final int BATCH_SIZE_FOR_PING_SERVICE_GLOBAL = 10;
     public static final String XAPI_KEY_GLOBAL = "";
-    public static final int SERVICE_TIMEOUT_GLOBAL = 1800000;  // in millis
+    public static final int SERVICE_TIMEOUT_GLOBAL = 0;  // in millis
 
 
 }
