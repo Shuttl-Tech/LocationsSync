@@ -43,7 +43,8 @@ public class GpsSdkEndToEnd extends BaseTestCase {
                         , TestConstants.ENABLE_ALARM_MANAGER
                         , TestConstants.REUSE_LAST_LOCATION
                         , TestConstants.NOTIFICATION_ICON_ID
-                        , TestConstants.ALARM_TRIGGER_INTERVAL);
+                        , TestConstants.ALARM_TRIGGER_INTERVAL
+                        , TestConstants.INACTIVITY_INTERVAL);
 
         // Initiate Both Location Services
         ServiceHelper.startBothServicesIfNotRunning(activityTestRule.getActivity().getApplication()
